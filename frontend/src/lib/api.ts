@@ -1,0 +1,98 @@
+// @ts-ignore
+import axios from 'axios';
+import { CandidateFilters } from '@/types';
+
+// Create axios instance with base configuration
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  timeout: 10000, // 10 seconds timeout
+});
+
+// Request interceptor to attach Bearer token
+api.interceptors.request.use(
+  (config: any) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error: any) => Promise.reject(error)
+);
+
+// Response interceptor for 401/403 error handling
+api.interceptors.response.use(
+  (response: any) => response,
+  (error: any) => {
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      localStorage.removeItem('token');
+      window.location.href = '/auth/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Candidate API functions
+export const candidatesApi = {
+  getAll: async (filters?: CandidateFilters) => {
+    const response = await api.get('/api/candidates', { params: filters });
+    return response.data;
+  },
+
+  getById: async (id: string) => {
+    const response = await api.get(`/api/candidates/${id}`);
+    return response.data;
+  },
+
+  delete: async (id: string) => {
+    const response = await api.delete(`/api/candidates/${id}`);
+    return response.data;
+  },
+
+  toggleShortlist: async (id: string) => {
+    const response = await api.patch(`/api/candidates/${id}/shortlist`);
+    return response.data;
+  },
+};
+
+// Auth API functions
+export const authApi = {
+  forgotPassword: async (email: string) => {
+    const response = await api.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  resetPassword: async (token: string, newPassword: string) => {
+    const response = await api.post(`/auth/reset-password/${token}`, { newPassword });
+    return response.data;
+  },
+};
+
+// Dashboard API functions
+export const dashboardApi = {
+  getAdminMetrics: async () => {
+    const response = await api.get('/api/dashboard/admin');
+    return response.data;
+  },
+};
+
+// Error Logs API functions
+export const errorLogsApi = {
+  getAll: async (filters?: Record<string, any>) => {
+    const response = await api.get('/api/admin/error-logs', { params: filters });
+    return response.data;
+  },
+};
+
+// Audit Logs API functions
+export const auditLogsApi = {
+  getAll: async (filters?: Record<string, any>) => {
+    const response = await api.get('/api/admin/audit-logs', { params: filters });
+    return response.data;
+  },
+};
+
+export default api;
