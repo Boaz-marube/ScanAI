@@ -131,7 +131,7 @@ export default function AccountSettings() {
       setIsDeleteModalOpen(false);
       // Logout and redirect after successful deletion
       localStorage.removeItem('token');
-      window.location.href = '/auth/login';
+      window.location.href = '/';
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to delete account');
       setIsDeleteModalOpen(false);
