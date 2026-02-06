@@ -239,7 +239,7 @@ export interface Education {
 // Component Props Types
 export interface ExperienceSectionProps {
   experience: WorkExperience[];
-  education?: Education;
+  education?: Education[];
 }
 
 export interface ShortlistedCandidate {
@@ -338,6 +338,8 @@ export interface AuthContextType {
   error: string | null;
   login: (email: string, password: string) => Promise<User | null>;
   register: (email: string, password: string) => Promise<void>;
+  verifyEmail: (email: string, code: string) => Promise<User>;
+  resendVerificationCode: (email: string) => Promise<{ message: string }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }

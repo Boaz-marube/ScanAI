@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '@/contexts/AuthContext';
 import GoogleAuthButton from '@/components/auth/GoogleAuthButton';
+import toast from '@/lib/toast';
 import { RegisterFormData, RegisterFormErrors } from '@/types';
 
 export default function RegisterForm() {
@@ -52,11 +53,18 @@ export default function RegisterForm() {
     if (!validateForm()) return;
     
     setIsLoading(true);
+    setErrors({});
+    
     try {
       await registerUser(formData.email, formData.password);
-      router.push('/complete-profile');
-    } catch (error) {
-      console.error('Registration failed:', error);
+      // Registration successful - redirect directly to verification
+      toast.success('Account created successfully!');
+      router.push(`/auth/verify-email?email=${encodeURIComponent(formData.email)}`);
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message || 'Registration failed. Please try again.';
+      toast.error(errorMessage);
+      setErrors({ email: errorMessage });
+
     } finally {
       setIsLoading(false);
     }
@@ -118,11 +126,11 @@ export default function RegisterForm() {
             />
             <span className="text-sm text-gray-700">
               I agree to the{' '}
-              <Link href="/terms" className="text-[#6366F1] hover:underline">
+              <Link href="/legal/terms" className="text-[#6366F1] hover:underline">
                 Terms of Service
               </Link>
               {' '}and{' '}
-              <Link href="/privacy" className="text-[#6366F1] hover:underline">
+              <Link href="/legal/privacy" className="text-[#6366F1] hover:underline">
                 Privacy Policy
               </Link>
             </span>

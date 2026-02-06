@@ -46,6 +46,11 @@ export const candidatesApi = {
 		const response = await api.patch(`/api/candidates/${id}/shortlist`);
 		return response.data;
 	},
+
+	getFilterOptions: async () => {
+		const response = await api.get('/api/candidates/filter-options');
+		return response.data;
+	},
 };
 
 // Auth API functions
@@ -66,6 +71,16 @@ export const authApi = {
 		const response = await api.post(`/auth/reset-password/${token}`, {
 			newPassword,
 		});
+		return response.data;
+	},
+
+	verifyEmail: async (email: string, code: string) => {
+		const response = await api.post('/auth/verify-email', { email, code });
+		return response.data;
+	},
+
+	resendVerificationCode: async (email: string) => {
+		const response = await api.post('/auth/resend-verification', { email });
 		return response.data;
 	},
 };
