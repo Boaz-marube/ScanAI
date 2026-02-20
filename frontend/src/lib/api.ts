@@ -9,7 +9,7 @@ const api = axios.create({
 	headers: {
 		"Content-Type": "application/json",
 	},
-	timeout: 10000, // 10 seconds timeout
+	timeout: 30000, // 30 seconds timeout - increased for large datasets
 	withCredentials: true, // Enable cookies for JWT authentication
 });
 
@@ -116,6 +116,54 @@ export const auditLogsApi = {
 	getAll: async (filters?: Record<string, any>) => {
 		const response = await api.get("/api/admin/audit-logs", {
 			params: filters,
+		});
+		return response.data;
+	},
+};
+
+// Job Postings API functions
+export const jobPostingsApi = {
+	create: async (data: any) => {
+		const response = await api.post('/api/job-postings', data);
+		return response.data;
+	},
+
+	getAll: async (filters?: { page?: number; limit?: number; search?: string }) => {
+		const response = await api.get('/api/job-postings', { params: filters });
+		return response.data;
+	},
+
+	getById: async (id: string) => {
+		const response = await api.get(`/api/job-postings/${id}`);
+		return response.data;
+	},
+
+	update: async (id: string, data: any) => {
+		const response = await api.put(`/api/job-postings/${id}`, data);
+		return response.data;
+	},
+
+	delete: async (id: string) => {
+		const response = await api.delete(`/api/job-postings/${id}`);
+		return response.data;
+	},
+
+	toggleActive: async (id: string) => {
+		const response = await api.patch(`/api/job-postings/${id}/toggle`);
+		return response.data;
+	},
+
+	updateStatus: async (id: string, status: 'draft' | 'active' | 'inactive') => {
+		const response = await api.patch(`/api/job-postings/${id}/status`, { status });
+		return response.data;
+	},
+	getByToken: async (token: string) => {
+		const response = await api.get(`/api/job-postings/apply/${token}`);
+		return response.data;
+	},
+	submitApplication: async (token: string, formData: FormData) => {
+		const response = await api.post(`/api/job-postings/apply/${token}`, formData, {
+			headers: { "Content-Type": "multipart/form-data" },
 		});
 		return response.data;
 	},

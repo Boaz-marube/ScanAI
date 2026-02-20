@@ -23,8 +23,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const recruiterNavItems = [
     { id: 'new-evaluations', label: 'New Evaluations', icon: FileText, href: '/evaluations/new' },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-    // commented out job posting for now till dvpt is done
-    // { id: 'job-posting', label: 'Job Posting', icon: LucideBriefcase, href: '/job-posting' },
+    { id: 'job-posting', label: 'Job Posting', icon: LucideBriefcase, href: '/job-posting' },
     { id: 'candidate-pipeline', label: 'Candidate Pipeline', icon: Users, href: '/candidates' },
     { id: 'settings', label: 'Settings', icon: Settings, href: '/settings' },
     { id: 'logout', label: 'Logout', icon: LogOut, href: '#' },
@@ -96,7 +95,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 key={item.id}
                 onClick={() => handleNavClick(item.href, item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
-                  isNewEvaluation || isActive
+                  isActive
                     ? 'bg-gradient-to-r from-[#29B1B4] via-[#6A80D9] to-[#AA50FF] text-white hover:opacity-90'
                     : 'text-gray-400 hover:bg-gray-800 hover:text-white'
                 }`}
